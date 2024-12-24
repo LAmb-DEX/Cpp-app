@@ -1,0 +1,22 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo "Log in to Amazon ECR..."
+      - $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
+
+  build:
+    commands:
+      - echo "Building Docker image..."
+      - docker build -t simple-cpp-app .
+
+  post_build:
+    commands:
+      - echo "Tagging and pushing Docker image..."
+      - docker tag simple-cpp-app:latest <ECR_URI>/simple-cpp-app:latest
+      - docker push <ECR_URI>/simple-cpp-app:latest
+
+artifacts:
+  files:
+    - "**/*"
