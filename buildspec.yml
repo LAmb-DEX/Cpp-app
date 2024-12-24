@@ -4,7 +4,7 @@ phases:
   pre_build:
     commands:
       - echo "Log in to Amazon ECR..."
-      - $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
+      - $(aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $ECR_URI)
 
   build:
     commands:
@@ -14,8 +14,8 @@ phases:
   post_build:
     commands:
       - echo "Tagging and pushing Docker image..."
-      - docker tag simple-cpp-app:latest <ECR_URI>/simple-cpp-app:latest
-      - docker push <ECR_URI>/simple-cpp-app:latest
+      - docker tag simple-cpp-app:latest $ECR_URI/simple-cpp-app:latest
+      - docker push $ECR_URI/simple-cpp-app:latest
 
 artifacts:
   files:
